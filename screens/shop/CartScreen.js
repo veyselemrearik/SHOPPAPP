@@ -2,8 +2,12 @@
 import React from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import CartItem from '../../components/shop/CartItem';
+import * as cartActions from '../../store/actions/cart';
+import * as ordersActions from '../../store/actions/order';
+import Card from '../../components/UI/Card';
+
 
 const CartScreen = props => {
     const cartTotalAmount = useSelector(state => state.cart.totalAmount);
@@ -18,17 +22,28 @@ const CartScreen = props => {
                 sum: state.cart.items[key].sum,
             });
         }
-        return transformedCartItems;
+        return transformedCartItems.sort((a, b) =>
+            a.productPrice > b.productPrice ? 1 : -1
+        );
     });
+    const dispatch = useDispatch();
 
     return (
         <View style={styles.screen} >
-            <View style={styles.summary} >
+            <Card style={styles.summary} >
                 <Text style={styles.summaryText} >
-                    Toplam: <Text style={styles.amount} >{cartTotalAmount.toFixed(2)} TL </Text>
+                    Toplam:{' '}
+                    <Text style={styles.amount} >{Math.round(cartTotalAmount.toFixed(2) * 100) / 100} TL </Text>
                 </Text>
-                <Button color={Colors.primary} title='Sipariş Ver' disabled={cartItems.length === 0} />
-            </View>
+                <Button
+                    color={Colors.accent}
+                    title='Sipariş Ver'
+                    disabled={cartItems.length === 0}
+                    onPress={() => {
+                        dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+                    }}
+                />
+            </Card>
             <FlatList
                 data={cartItems}
                 keyExtractor={item => item.productId}
@@ -37,13 +52,21 @@ const CartScreen = props => {
                         quantity={itemData.item.quantity}
                         title={itemData.item.productTitle}
                         amount={itemData.item.sum}
-                        onRemove={() => { }}
+                        deletable={true}
+                        onRemove={() => {
+                            dispatch(cartActions.removeFromCart(itemData.item.productId));
+                        }}
+
                     />
                 )}
             />
         </View>
 
     )
+}
+
+CartScreen.navigationOptions = {
+    headerTitle: "Sepetim"
 }
 
 const styles = StyleSheet.create({
@@ -57,13 +80,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
         padding: 10,
-        shadowColor: 'black',
-        shadowOpacity: 0.26,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-        elevation: 5,
-        borderRadius: 10,
-        backgroundColor: 'white',
     },
     summaryText: {
         fontFamily: 'openSansBold',
