@@ -19,22 +19,24 @@ import Colors from '../../constants/Colors';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const ProductOverviewScreen = props => {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
     const products = useSelector(state => state.products.availableProducts
     );
     const dispatch = useDispatch();
 
-    const loadProducts = useCallback(async () => {
-        setError(null)
-        setIsLoading(true)
-        try {
-            await dispatch(productsActions.fetchProducts());
-        } catch (error) {
-            setError(error.message);
-        }
-        setIsLoading(false)
-    }, [dispatch, setIsLoading, setError]);
+    const loadProducts = useCallback(
+        async () => {
+            setError(null)
+            setIsRefreshing(true)
+            try {
+                await dispatch(productsActions.fetchProducts());
+            } catch (error) {
+                setError(error.message);
+            }
+            setIsRefreshing(false);
+        }, [dispatch, setIsLoading, setError]);
 
     useEffect(() => {
         const willFocusSub = props.navigation.addListener(
@@ -47,7 +49,11 @@ const ProductOverviewScreen = props => {
     }, [loadProducts])
 
     useEffect(() => {
-        loadProducts();
+        setIsLoading(true);
+        loadProducts().then(() =>
+            setIsLoading(false)
+        );
+
     }, [dispatch, loadProducts])
 
     const selectItemHandler = (id, title) => {
@@ -86,6 +92,8 @@ const ProductOverviewScreen = props => {
 
     return (
         <FlatList
+            onRefresh={loadProducts}
+            refreshing={isRefreshing}
             data={products}
             keyExtractor={item => item.id}
             renderItem={itemData => <ProductItem

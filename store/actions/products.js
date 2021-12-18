@@ -14,7 +14,7 @@ export const fetchProducts = () => {
             );
 
             if (!response.ok) {
-                throw new Error('Something went wrong')
+                throw new Error('Ürünler bulunamadı!')
             }
 
             const resData = await response.json();
@@ -46,9 +46,12 @@ export const fetchProducts = () => {
 
 export const deleteProduct = productId => {
     return async (dispatch) => {
-        await fetch(`https://shopapp-a1d8f-default-rtdb.firebaseio.com/products/${productId}.json`, {
+        const response = await fetch(`https://shopapp-a1d8f-default-rtdb.firebaseio.com/products/${productId}.json`, {
             method: 'DELETE'
         })
+        if (!response.ok) {
+            throw new Error('Ürün silinemiyor.')
+        }
         dispatch({
             type: DELETE_PRODUCT, pid: productId,
         });
@@ -89,7 +92,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 export const updateProduct = (id, title, description, imageUrl, price) => {
     return async (dispatch) => {
         //istediğimiz async kodu redux thunk sayesinde bu fonksiyona yazabiliriz.
-        await fetch(
+        const response = await fetch(
             `https://shopapp-a1d8f-default-rtdb.firebaseio.com/products/${id}.json`, {
             method: 'PUT',
             headers: {
@@ -102,6 +105,9 @@ export const updateProduct = (id, title, description, imageUrl, price) => {
                 price,
             })
         })
+        if (!response.ok) {
+            throw new Error('Ürün şuanda düzenlenemiyor.')
+        }
         dispatch({
             type: UPDATE_PRODUCT,
             pid: id,
