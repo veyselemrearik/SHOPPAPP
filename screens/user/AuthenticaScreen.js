@@ -48,6 +48,7 @@ const AuthenticaScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const dispatch = useDispatch();
+
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
             email: '',
@@ -64,6 +65,7 @@ const AuthenticaScreen = props => {
             Alert.alert('Hata Oluştu!', error, [{ text: 'Tamam' }]);
         }
     }, [error])
+
     const authHandler = async () => {
         let action;
         if (isSingup) {
@@ -81,14 +83,14 @@ const AuthenticaScreen = props => {
         setIsLoading(true);
         try {
             await dispatch(action);
+            props.navigation.navigate('Shop');
 
         } catch (error) {
             setError(error.message);
+            setIsLoading(false)
         }
-
-        setIsLoading(false)
-
     }
+
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
         dispatchFormState({
             type: FORM_INPUT_UPDATE,
