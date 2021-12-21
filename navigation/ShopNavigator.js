@@ -1,5 +1,8 @@
+import React from 'react'
+import { useDispatch } from 'react-redux';
+import { Platform, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from "react-navigation-stack";
-import { createDrawerNavigator } from "react-navigation-drawer";
+import { createDrawerNavigator, DrawerNavigatorItems } from "react-navigation-drawer";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import ProductOverviewScreen from "../screens/shop/ProductOverviewScreen";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
@@ -9,10 +12,9 @@ import UserProductsScreen from "../screens/user/UserProductScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
 import StartupScreen from "../screens/StartupScreen";
 import Colors from "../constants/Colors";
-import { Platform } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
-import React from 'react';
 import AuthenticaScreen from "../screens/user/AuthenticaScreen";
+import * as authActions from '../store/actions/authentication';
 
 const defaultNavOptions = {
     headerStyle: {
@@ -84,6 +86,42 @@ const ShopNavigator = createDrawerNavigator({
 }, {
     contentOptions: {
         activeTintColor: Colors.primary
+    },
+    contentComponent: props => {
+        const dispatch = useDispatch();
+        return (
+            <View style={{ flex: 1, paddingTop: 20 }} >
+                <View forceInset={{ top: 'always', horizontal: 'never' }} >
+                    <DrawerNavigatorItems {...props} />
+                    <View style={{
+                        alignItems: 'center', justifyContent: 'center', marginTop: 30
+                    }}  >
+                        <TouchableOpacity
+                            style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '100%',
+                                height: 30,
+                                backgroundColor: Colors.primary,
+                                borderRadius: 360
+                            }}
+                            onPress={() => {
+                                dispatch(authActions.logout());
+                                props.navigation.navigate('Auth');
+                            }}
+                        >
+                            <Ionicons
+                                name={Platform.OS === 'android' ? 'md-log-out-outline' : 'ios-log-out-outline'}
+                                size={23}
+                                color='white'
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+            </View>
+        )
     }
 }
 );
