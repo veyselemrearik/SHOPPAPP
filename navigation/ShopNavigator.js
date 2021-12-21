@@ -7,6 +7,7 @@ import CartScreen from "../screens/shop/CartScreen";
 import OrdersScreen from "../screens/shop/OrdersScreen";
 import UserProductsScreen from "../screens/user/UserProductScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
+import StartupScreen from "../screens/StartupScreen";
 import Colors from "../constants/Colors";
 import { Platform } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
@@ -96,6 +97,7 @@ const AuthenticateNavigator = createStackNavigator({
 )
 
 const MainNavigator = createSwitchNavigator({
+    Startup: StartupScreen,
     Auth: AuthenticateNavigator,
     Shop: ShopNavigator,
 });

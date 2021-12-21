@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Platform, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { FlatList, Platform, ActivityIndicator, View, StyleSheet, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/HeaderButton';
@@ -27,6 +27,12 @@ const OrdersScreen = props => {
                 <ActivityIndicator size="large" color={Colors.accent} />
             </View>
         )
+    }
+
+    if (orders.length === 0) {
+        return <View style={styles.centered} >
+            <Text style={styles.message} >Kayıtlı siparişin yok!</Text>
+        </View>
     }
 
     return (
@@ -66,6 +72,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    message: {
+        fontSize: 16,
+        fontFamily: 'openSansRegular',
+        marginBottom: 10
     }
 })
 

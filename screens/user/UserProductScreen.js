@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Platform, Button, StyleSheet, View, Alert } from 'react-native';
+import { FlatList, Platform, Button, StyleSheet, View, Alert, Text } from 'react-native';
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/HeaderButton';
@@ -27,6 +27,13 @@ const UserProductsScreen = props => {
             }
         ]);
     };
+
+    if (userProducts.length === 0) {
+        return <View style={styles.centered} >
+            <Text style={styles.message} >Kayıtlı ürünün yok ürün ekleyebilirsin.</Text>
+        </View>
+    }
+
     return (<FlatList
         data={userProducts}
         keyExtractor={item => item.id}
@@ -97,6 +104,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         marginBottom: 20
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    message: {
+        fontSize: 16,
+        fontFamily: 'openSansRegular',
+        marginBottom: 10
     }
 })
 
