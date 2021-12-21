@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Text, Button } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import Colors from '../../constants/Colors';
 import CartItem from './CartItem';
 import Card from '../UI/Card';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const OrderItem = props => {
     const [showDetails, setShowDetails] = useState(false)
@@ -13,9 +14,13 @@ const OrderItem = props => {
                 <Text style={styles.totalAmount}>{props.amount.toFixed(2)} TL</Text>
                 <Text style={styles.date} > {props.date} </Text>
             </View>
-            <Button color={Colors.primary} title='Detaylar' onPress={() => {
+            <TouchableOpacity style={styles.button} onPress={() => {
                 setShowDetails(prevState => !prevState)
-            }} />
+            }} >
+                <Text style={{ fontFamily: 'openSansBold', color: 'white' }} >Detay</Text>
+                <MaterialIcons name={showDetails ? "keyboard-arrow-up" : 'keyboard-arrow-down'} size={24} color="white" />
+
+            </TouchableOpacity>
             {showDetails &&
                 <View style={styles.detailItems} >
                     {
@@ -57,6 +62,16 @@ const styles = StyleSheet.create({
     },
     detailItems: {
         width: '100%'
+    },
+    button: {
+        width: '100%',
+        height: '20%',
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.accent,
+        borderRadius: 100
     }
 })
 

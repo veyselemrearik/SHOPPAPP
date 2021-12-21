@@ -37,7 +37,7 @@ const OrdersScreen = props => {
 
     return (
         <FlatList
-            data={orders}
+            data={orders.reverse()}
             keyExtractor={item => item.id}
             renderItem={itemData => <OrderItem
                 amount={itemData.item.totalAmount}

@@ -1,13 +1,12 @@
 
-import React from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import CartItem from '../../components/shop/CartItem';
 import * as cartActions from '../../store/actions/cart';
 import * as ordersActions from '../../store/actions/order';
 import Card from '../../components/UI/Card';
-
 
 const CartScreen = props => {
     const cartTotalAmount = useSelector(state => state.cart.totalAmount);
@@ -28,6 +27,21 @@ const CartScreen = props => {
     });
     const dispatch = useDispatch();
 
+
+    const orderHandler = (item, totalAmount) => {
+        Alert.alert('Ödemeniz Alındı', 'Ödemeniz başarıyla alındı. ', [
+            {
+                text: 'Devam',
+                style: 'destructive',
+                onPress: () => {
+                    dispatch(ordersActions.addOrder(item, totalAmount));
+                }
+            }
+        ]);
+
+    };
+
+
     return (
         <View style={styles.screen} >
             <Card style={styles.summary} >
@@ -39,9 +53,9 @@ const CartScreen = props => {
                     color={Colors.accent}
                     title='Sipariş Ver'
                     disabled={cartItems.length === 0}
-                    onPress={() => {
-                        dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
-                    }}
+                    onPress={() =>
+                        orderHandler(cartItems, cartTotalAmount)
+                    }
                 />
             </Card>
             <FlatList
@@ -80,6 +94,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
         padding: 10,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
     },
     summaryText: {
         fontFamily: 'openSansBold',
