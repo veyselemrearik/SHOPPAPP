@@ -17,8 +17,8 @@ const OrderItem = props => {
             <TouchableOpacity style={styles.button} onPress={() => {
                 setShowDetails(prevState => !prevState)
             }} >
-                <Text style={{ fontFamily: 'openSansBold', color: 'white' }} >Detay</Text>
-                <MaterialIcons name={showDetails ? "keyboard-arrow-up" : 'keyboard-arrow-down'} size={24} color="white" />
+                <Text style={{ fontFamily: 'openSansBold', color: Colors.accent }} >Detay</Text>
+                <MaterialIcons name={showDetails ? "keyboard-arrow-up" : 'keyboard-arrow-down'} size={24} color={Colors.accent} />
 
             </TouchableOpacity>
             {showDetails &&
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Colors.accent,
         borderRadius: 100
     }
 })
