@@ -1,9 +1,12 @@
 import Product from "../../models/product";
-
+import storage from "../../constants/Firebase";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
+
+
 
 export const fetchProducts = () => {
     return async (dispatch, getState) => {
@@ -62,6 +65,29 @@ export const deleteProduct = productId => {
     }
 
 };
+export const uploadProductImage = (uri) => {
+    return async (dispatch, getState) => {
+        try {
+            const userId = getState().authentication.userId;
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            const tempId = new Date().toString();
+            const imageRef = ref(storage, `user-images/${userId}/${tempId}`)
+            uploadBytes(imageRef, blob).then((snapshot) => {
+                console.log('Image has been uploaded');
+                getDownloadURL(imageRef)
+                    .then((url) => {
+                        console.log(url)
+                        return url
+                    })
+            });
+
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    }
+
+}
 
 export const createProduct = (title, description, imageUrl, price) => {
     return async (dispatch, getState) => {

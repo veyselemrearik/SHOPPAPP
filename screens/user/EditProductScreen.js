@@ -9,6 +9,7 @@ import {
     Alert,
     ActivityIndicator
 } from 'react-native'
+import ImageSelector from '../../components/UI/ImageSelector'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/HeaderButton';
 import * as productsActions from '../../store/actions/products';
@@ -42,6 +43,7 @@ const formReducer = (state, action) => {
 
 const EditProductScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedImage, setSelectedImage] = useState()
     const [error, setError] = useState();
     const prodId = props.navigation.getParam('productId');
     const editedProduct = useSelector(state =>
@@ -58,8 +60,8 @@ const EditProductScreen = props => {
         },
         inputValidities: {
             title: editedProduct ? true : false,
-            imageUrl: editedProduct ? true : false,
             price: editedProduct ? true : false,
+            imageUrl: true,
             description: editedProduct ? true : false,
         },
         formIsValid: editedProduct ? true : false
@@ -71,6 +73,17 @@ const EditProductScreen = props => {
         }
 
     }, [error])
+
+    const imageTakenHandler = async (imagePath) => {
+        let photoUrl = await dispatch(
+            productsActions.uploadProductImage(
+                imagePath
+            )
+        );
+        const photoUrlWithJpeg = photoUrl + '.jpeg';
+        setSelectedImage(photoUrlWithJpeg);
+
+    };
 
     const submitHandler = useCallback(async () => {
         if (!formState.formIsValid) {
@@ -86,7 +99,7 @@ const EditProductScreen = props => {
                         prodId,
                         formState.inputValues.title,
                         formState.inputValues.description,
-                        formState.inputValues.imageUrl,
+                        selectedImage,
                         +formState.inputValues.price
                     )
                 );
@@ -95,7 +108,7 @@ const EditProductScreen = props => {
                     productsActions.createProduct(
                         formState.inputValues.title,
                         formState.inputValues.description,
-                        formState.inputValues.imageUrl,
+                        selectedImage,
                         +formState.inputValues.price
                     )
                 );
@@ -110,6 +123,8 @@ const EditProductScreen = props => {
     useEffect(() => {
         props.navigation.setParams({ 'submit': submitHandler });
     }, [submitHandler]);
+
+
 
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
@@ -138,6 +153,7 @@ const EditProductScreen = props => {
         >
             <ScrollView>
                 <View styles={styles.form} >
+                    <ImageSelector onImageTaken={imageTakenHandler} title="" />
                     <Input
                         id='title'
                         label='Başlık'
@@ -146,16 +162,6 @@ const EditProductScreen = props => {
                         autoCapitalize='sentences'
                         onInputChange={inputChangeHandler}
                         initialValue={editedProduct ? editedProduct.title : ''}
-                        initiallyValid={!!editedProduct}
-                        required
-                    />
-                    <Input
-                        id='imageUrl'
-                        label='Image URL'
-                        errorText='Lütfen uygun bir resim linki girin!'
-                        keyboardType='default'
-                        onInputChange={inputChangeHandler}
-                        initialValue={editedProduct ? editedProduct.imageUrl : ''}
                         initiallyValid={!!editedProduct}
                         required
                     />
