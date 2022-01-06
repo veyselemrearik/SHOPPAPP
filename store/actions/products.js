@@ -4,6 +4,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
+export const UPLOAD_IMAGES = 'UPLOAD_IMAGES';
+export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 
@@ -67,6 +69,7 @@ export const deleteProduct = productId => {
 };
 export const uploadProductImage = (uri) => {
     return async (dispatch, getState) => {
+        dispatch({ type: UPLOAD_IMAGES })
         try {
             const userId = getState().authentication.userId;
             const response = await fetch(uri);
@@ -77,8 +80,11 @@ export const uploadProductImage = (uri) => {
                 console.log('Image has been uploaded');
                 getDownloadURL(imageRef)
                     .then((url) => {
+                        dispatch({
+                            type: UPLOAD_IMAGES_SUCCESS,
+                            payload: url
+                        })
                         console.log(url)
-                        return url
                     })
             });
 
@@ -86,7 +92,11 @@ export const uploadProductImage = (uri) => {
             throw new Error(err.message);
         }
     }
-
+}
+export const clearUploadedImage = () => {
+    return async (dispatch) => {
+        dispatch({ type: UPLOAD_IMAGES })
+    }
 }
 
 export const createProduct = (title, description, imageUrl, price) => {

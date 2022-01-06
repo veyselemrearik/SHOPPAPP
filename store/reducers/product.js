@@ -4,12 +4,15 @@ import {
     DELETE_PRODUCT,
     CREATE_PRODUCT,
     UPDATE_PRODUCT,
-    SET_PRODUCTS
+    SET_PRODUCTS,
+    UPLOAD_IMAGES,
+    UPLOAD_IMAGES_SUCCESS
 } from "../actions/products";
 
 const initialState = {
     availableProducts: [],
-    userProducts: []
+    userProducts: [],
+    uploadedImage: null
 };
 export default (state = initialState, action) => {
     switch (action.type) {
@@ -67,7 +70,18 @@ export default (state = initialState, action) => {
                     product => product.id !== action.pid
                 )
             };
-
+        case UPLOAD_IMAGES:
+            return {
+                ...state,
+                uploadedImage: null
+            }
+        case UPLOAD_IMAGES_SUCCESS:
+            return {
+                ...state,
+                uploadedImage: action.payload
+            }
+        default:
+            return state
     }
-    return state;
+
 };
