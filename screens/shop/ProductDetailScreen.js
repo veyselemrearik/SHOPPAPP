@@ -23,13 +23,6 @@ const ProductDetailScreen = (props) => {
 
                 <View style={styles.buttonContainer} >
                     <TouchableOpacity
-                        style={isFavorite ? styles.favoriteActiveContainer : styles.favoritePasiveContainer}
-                        onPress={() => {
-                            setIsFavorite(!isFavorite)
-                        }} >
-                        <MaterialIcons name="favorite" size={24} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
                         style={styles.addCartContainer}
                         onPress={() => {
 
@@ -99,10 +92,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '50%',
+        width: '100%',
         height: 35,
-        backgroundColor: Colors.primary,
-        borderRadius: 15,
+        backgroundColor: Colors.primary
     },
     favoritePasiveContainer: {
 
